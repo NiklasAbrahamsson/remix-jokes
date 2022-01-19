@@ -9,7 +9,7 @@ export const loader: LoaderFunction = async ({
     params
 }) => {
     const joke = await db.joke.findFirst({
-        where: { id: params.jokeId }
+        where: { id: params.jokeid }
     });
 
     if (!joke) throw new Error("Joke not found");
