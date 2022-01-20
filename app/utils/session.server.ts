@@ -2,6 +2,7 @@ import { db } from './db.server';
 import bcrypt from "bcryptjs";
 import { createCookieSessionStorage, redirect } from 'remix';
 
+
 type LoginForm = {
     username: string;
     password: string;
@@ -45,4 +46,29 @@ export async function createUserSession(userId: string, redirectTo: string) {
             "Set-Cookie": await storage.commitSession(session)
         }
     })
+}
+
+export function getUserSession(request: Request) {
+    return storage.getSession(request.headers.get('cookie'));
+}
+
+export async function getUserId(request: Request) {
+    const session = await getUserSession(request);
+    const userId = session.get('userId');
+
+    if (!userId || typeof userId !== 'string') return null;
+
+    return userId;
+}
+
+export async function requireUserId(request: Request, redirectTo: string = new URL(request.url).pathname) {
+    const session = await getUserSession(request);
+    const userId = session.get('userId');
+
+    if (!userId || typeof userId !== 'string') {
+        const searchParams = new URLSearchParams([['redirectTo', redirectTo]])
+        throw redirect(`/login?${searchParams}`)
+    }
+
+    return userId;
 }
