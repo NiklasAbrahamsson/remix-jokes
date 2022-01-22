@@ -133,3 +133,11 @@ export default function NewJokeRoute() {
         </div>
     );
 }
+
+export function ErrorBoundary({ error }: { error: Error }) {
+    return (
+        <div className="error-container">
+            Something unexpected went wrong. Sorry about that.
+        </div>
+    )
+}
