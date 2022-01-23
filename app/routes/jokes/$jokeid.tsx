@@ -1,8 +1,21 @@
-import { ActionFunction, LoaderFunction, redirect, useCatch, useParams } from "remix";
+import { ActionFunction, LoaderFunction, MetaFunction, redirect, useCatch, useParams } from "remix";
 import { Link, useLoaderData } from "remix";
 import type { Joke } from "@prisma/client";
 import { db } from "~/utils/db.server";
 import { getUserId } from '~/utils/session.server';
+
+export const meta: MetaFunction = ({ data }: { data: LoaderData | undefined }) => {
+    if (!data) {
+        return {
+            title: "No joke",
+            description: "No joke found"
+        };
+    }
+    return {
+        title: `"${data.joke.name}" joke`,
+        description: `Enjoy the "${data.joke.name}" joke and much more`
+    };
+}
 
 type LoaderData = { joke: Joke, isOwner: boolean };
 
